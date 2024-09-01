@@ -1,0 +1,7 @@
+autoviz==0.1.905
+matplotlib==3.8.4
+numpy==2.1.0
+pandas==2.2.2
+scikit_learn==1.5.1
+seaborn==0.13.2
+statsmodels==0.14.2

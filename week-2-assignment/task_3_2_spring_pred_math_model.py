@@ -25,7 +25,20 @@ data = pd.DataFrame({"x":range(1,226+1,1), "y":data_temp.SpringPos})
 # y= A exp(-dx)sin(sqrt(1-d^2)wx+p)
 # alternatively a close approximate equation which fits the given data
 # is selected for modelling 
+
 # y = c + m1*x1 + m2*sin(x1)+ m3*x1*sin(x1)
+
+# $y = c + m_1 x + m_2 \sin(x) + m_3 x \sin(x)$​ approximates very well 
+# for the damped oscillation for the given  limited time interval of the dataset
+
+# $m_2\sin(x)$​ - part models the periodicity contained in the dataset
+
+# $m_3 x \sin(x)$ - part models the decaying part by cancelling 
+# the $m_2\sin(x)$ part as $x$ or $\theta$​ time increases
+# so, combining the two graphs $m_2 \sin(x) + m_3 x \sin(x)$  approximates 
+# the amplitude data and can be used for both right and left extrapolation 
+
+
 
 
 # sub task : feature transformation
