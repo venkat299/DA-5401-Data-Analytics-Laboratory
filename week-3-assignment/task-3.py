@@ -6,12 +6,9 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-import statsmodels
 import statsmodels.formula.api as smf
 
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import Lasso
-
 
 import common
 
@@ -140,6 +137,32 @@ print(f'{model1.params}')
 # x4              992.418029
 # x5               39.499114
 # I(x1 * x4)       24.185429
+print(model1.summary())
+#                             OLS Regression Results                            
+# ==============================================================================
+# Dep. Variable:                      y   R-squared:                       1.000
+# Model:                            OLS   Adj. R-squared:                  1.000
+# Method:                 Least Squares   F-statistic:                 5.625e+07
+# Date:                Sun, 25 Aug 2024   Prob (F-statistic):          8.59e-305
+# Time:                        10:34:21   Log-Likelihood:                -102.07
+# No. Observations:                 101   AIC:                             214.1
+# Df Residuals:                      96   BIC:                             227.2
+# Df Model:                           4                                         
+# Covariance Type:            nonrobust                                         
+# ==============================================================================
+#                  coef    std err          t      P>|t|      [0.025      0.975]
+# ------------------------------------------------------------------------------
+# Intercept   1.022e+04      0.091   1.12e+05      0.000    1.02e+04    1.02e+04
+# x2            29.0633      0.095    304.566      0.000      28.874      29.253
+# x4           992.4180      0.096   1.04e+04      0.000     992.228     992.608
+# x5            39.4991      0.072    548.433      0.000      39.356      39.642
+# I(x1 * x4)    24.1854      0.061    398.386      0.000      24.065      24.306
+# ==============================================================================
+# Omnibus:                       37.178   Durbin-Watson:                   1.638
+# Prob(Omnibus):                  0.000   Jarque-Bera (JB):                6.248
+# Skew:                          -0.005   Prob(JB):                       0.0440
+# Kurtosis:                       1.782   Cond. No.                         3.20
+# ==============================================================================
 
 # so there is no significant performance increase let us fix this model and evaluate on test data
 

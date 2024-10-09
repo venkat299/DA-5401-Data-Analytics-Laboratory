@@ -5,3 +5,6 @@
 __pycache__/*
 week-2-assignment/task_3_2_.tar.gz
 eda_report.html
+*.tar.gz
+
+.sync-conflict-20240905-141250-YPLTYWW.gitignore
