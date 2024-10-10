@@ -3,8 +3,6 @@ import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import ParameterGrid
 from sklearn.metrics import accuracy_score
@@ -20,7 +18,6 @@ _dir = os.path.dirname(__file__)
 
 
 # Load the datasets from CSV files
-# data = pd.read_csv(os.path.join(_dir, 'data_processed_pca2.csv'))
 data = pd.read_csv(os.path.join(_dir, 'filtered_features.csv'))
 
 
@@ -48,56 +45,60 @@ X_test = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
 print(f"Train set: {X_train.shape}, {y_train.shape}")
 print(f"Test set: {X_test.shape}, {y_test.shape}")
 
+# Train set: (48000, 100), (48000,)
+# Test set: (12000, 100), (12000,)
 
-# # Define the parameter grids for each classifier
-# param_grid_svc = {
-#     'kernel': ['linear', 'rbf'],
-#     'C': [0.1, 1, 10],
-#     'gamma': ['scale', 'auto']
-# }
+# Define the parameter grids for each classifier
+param_grid_svc = {
+    'kernel': ['linear', 'rbf'],
+    'C': [0.1, 1, 10],
+    'gamma': ['scale', 'auto']
+}
 
-# # Initialize the classifiers
-# model = SVC()
+# Initialize the classifiers
+model = SVC()
 
-# # Initialize tqdm progress bar
-# best_score = -1
-# best_params = None
+# Initialize tqdm progress bar
+best_score = -1
+best_params = None
 
 
-# # Get total number of combinations
-# grid = list(ParameterGrid(param_grid_svc))
-# total_combinations = len(grid)
+# Get total number of combinations
+grid = list(ParameterGrid(param_grid_svc))
+total_combinations = len(grid)
 
-# with tqdm(total=total_combinations) as pbar:
-#     # Iterate over all parameter combinations
-#     for params in grid:
-#         # Set the model parameters
-#         model.set_params(**params)
+print("Doing grid search to find the best parameter for svc...")
+
+with tqdm(total=total_combinations) as pbar:
+    # Iterate over all parameter combinations
+    for params in grid:
+        # Set the model parameters
+        model.set_params(**params)
         
-#         # Fit the model
-#         model.fit(X_train, y_train)
+        # Fit the model
+        model.fit(X_train, y_train)
         
-#         # Predict and evaluate
-#         predict_test = model.predict(X_test)
-#         score = accuracy_score(y_test, predict_test)
+        # Predict and evaluate
+        predict_test = model.predict(X_test)
+        score = accuracy_score(y_test, predict_test)
         
-#         # Track the best score and parameters
-#         if score > best_score:
-#             best_score = score
-#             best_params = params
+        # Track the best score and parameters
+        if score > best_score:
+            best_score = score
+            best_params = params
         
-#         # Update the progress bar
-#         pbar.update(1)
+        # Update the progress bar
+        pbar.update(1)
 
-# # Print the best results
-# print(f"Best Score: {best_score}")
-# print(f"Best Parameters: {best_params}")
+# Print the best results
+print(f"Best Score: {best_score}")
+print(f"Best Parameters: {best_params}")
 
 # output
 # Best Score: 0.9914166666666666
 # Best Parameters: {'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}
 
-best_params = {'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}
+# best_params = {'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}
 best_model = SVC(probability=True, random_state=42)
 best_model.set_params(**best_params)
 # Fit the model
@@ -112,28 +113,14 @@ print("Train Accuracy score of the model :",accuracy_score(y_train, predict_trai
 #confusion matrix for test data
 conf_matrix = confusion_matrix(y_test, predict_test)
 
-# Step 7: Plot the confusion matrix using seaborn
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted Labels')
-plt.ylabel('True Labels')
-# plt.show()
+
 
 print(y_test.shape, predict_test_prob.shape)
 # Calculate ROC curve and AUC, specifying the positive label ('pos')
 fpr, tpr, thresholds = roc_curve(y_test, predict_test_prob, pos_label='pos')
 roc_auc = roc_auc_score(y_test, predict_test_prob)
 
-# Plot ROC curve
-plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr, color='blue', label=f'ROC Curve (AUC = {roc_auc:.2f})')
-plt.plot([0, 1], [0, 1], color='red', linestyle='--')
-plt.xlabel('False Positive Rate (FPR)')
-plt.ylabel('True Positive Rate (TPR)')
-plt.title('ROC Curve')
-plt.legend()
-# plt.show()
+
 
 # print(y_test, predict_test)
 # accuracy = accuracy_score(y_test, predict_test)
@@ -152,3 +139,44 @@ print(classification_report(y_test, predict_test))
 # print(f"Recall: {recall}")
 # print(f"F1 Score: {f1}")
 # print(f"AUC: {roc_auc}")
+
+# ====================================
+# output
+# ====================================
+
+# Train set: (48000, 100), (48000,)
+# Test set: (12000, 100), (12000,)
+# Test Accuracy score of the model : 0.9914166666666666
+# Train Accuracy score of the model : 0.9962291666666667
+# (12000,) (12000,)
+# Classification Report:
+#               precision    recall  f1-score   support
+
+#          neg       0.99      1.00      1.00     11800
+#          pos       0.81      0.63      0.71       200
+
+#     accuracy                           0.99     12000
+#    macro avg       0.90      0.81      0.85     12000
+# weighted avg       0.99      0.99      0.99     12000
+
+
+# Step 7: Plot the confusion matrix using seaborn
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.savefig(os.path.join(_dir,'img/02-01-confusion_svc.png'), dpi=300)
+plt.show()
+
+# Plot ROC curve
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, color='blue', label=f'ROC Curve (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='red', linestyle='--')
+plt.xlabel('False Positive Rate (FPR)')
+plt.ylabel('True Positive Rate (TPR)')
+plt.title('ROC Curve')
+plt.legend()
+plt.savefig(os.path.join(_dir,'img/02-01-ROC_svc.png'), dpi=300)
+
+plt.show()

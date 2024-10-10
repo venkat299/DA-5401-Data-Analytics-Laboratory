@@ -1,3 +1,12 @@
+# Let’s learn to deal with class-imbalance this time! We will consider the IDA2016 Challenge dataset for
+# our experimentation. The dataset is a binary classification y = {‘pos’, ‘neg’} problem with 170
+# features and 60,000 data points. The craziness here is that the class ratio is 1:59, that is, for every
+# positive data point, there are 59 negative data points in the training data. The challenge dataset has
+# a training file (aps_failure_training_set.csv) and a testing file (aps_failure_test_set.csv). We will
+# consider only the training file for our experimentation.
+
+# Task : Preprocess the dataset to make in amenable for building classifiers.
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
@@ -22,28 +31,6 @@ print(na_summary)
 
 
 
-# # Melt the DataFrame to long format for easier plotting
-# data_melted = data.melt(id_vars=['class'], var_name='Column', value_name='Value')
-
-# # Filter only rows with 'na'
-# na_data = data_melted[data_melted['Value'] == 'na']
-
-# # Create a count plot
-# plt.figure(figsize=(12, 6))
-# sns.countplot(data=na_data, x='Column', hue='class')
-# plt.xticks(rotation=90)
-# plt.title('Count of Missing Values by Column and Class')
-# plt.xlabel('Columns')
-# plt.ylabel('Count of Missing Values')
-# plt.legend(title='Class')
-# plt.tight_layout()
-# plt.show()
-
-# #drop all na
-# data = data.replace(['na'], [None])
-# data = data.dropna()
-# print(data.shape)
-
 # Replace "na" with NaN to handle them uniformly (optional but recommended)
 data.replace('na', pd.NA, inplace=True)
 
@@ -57,27 +44,13 @@ print(na_summary)
 
 data.to_csv(os.path.join(_dir, 'data_processed.csv'), index=False)
 
-
-
-
-# # Split the dataset into training (70%), validation (15%), and test (15%)
-# train_val, test = train_test_split(data, test_size=0.15, random_state=42)
-# train, val = train_test_split(train_val, test_size=0.1765, random_state=42)  # 0.1765 = 0.15/0.85
-
-# # Save the splits to CSV files
-# train.to_csv(os.path.join(_dir, 'train_data.csv'), index=False)
-# val.to_csv(os.path.join(_dir, 'val_data.csv'), index=False)
-# test.to_csv(os.path.join(_dir, 'test_data.csv'), index=False)
-
-
-# Step 1: Import necessary libraries
+# Import necessary libraries
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-
-# Step 3: Separate features and target variables
+# Separate features and target variables
 # Assuming the dataset has features and a target column named 'target'
 X = data.drop('class', axis=1)  # features
 y = data['class']  # class variable
